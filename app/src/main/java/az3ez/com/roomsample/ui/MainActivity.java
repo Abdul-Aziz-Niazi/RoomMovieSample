@@ -2,11 +2,12 @@ package az3ez.com.roomsample.ui;
 
 import android.arch.persistence.room.Room;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 
 import java.util.List;
 
@@ -31,16 +32,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 movieList = database.moviesDAO().getAll();
-                Log.d(TAG, "run: DB "+movieList.size());
+                Log.d(TAG, "run: DB " + movieList.size());
                 if (movieList.size() == 0) {
                     movieList = DataGenerator.generate();
                     database.moviesDAO().insertAll(movieList);
                 }
             }
         }.run();
-        Log.d(TAG, "onCreate: "+movieList);
+        Log.d(TAG, "onCreate: " + movieList);
         MovieAdapter adapter = new MovieAdapter(this, movieList);
         movieRV.setLayoutManager(new LinearLayoutManager(this));
+        LayoutAnimationController controller = AnimationUtils.loadLayoutAnimation(this, R.anim.layout_animation_bottom);
+        movieRV.setLayoutAnimation(controller);
         movieRV.setAdapter(adapter);
     }
 }
